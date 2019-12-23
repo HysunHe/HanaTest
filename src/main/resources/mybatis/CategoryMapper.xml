@@ -1,0 +1,57 @@
+<!DOCTYPE mapper
+    PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+    "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+
+<mapper namespace="com.oracle.oda.ext.dao.CategoryMapper">
+	
+	<select id="list" resultType="com.oracle.oda.ext.domains.Category" databaseId="oracle">
+		SELECT 
+			ID as id, 
+			NAME as name,
+			CREATED_AT as created_at,
+			UPDATED_AT as updated_at
+		FROM BOT_CATEGORIES
+		ORDER BY CREATED_AT ASC
+	</select>
+	
+	<select id="get" resultType="com.oracle.oda.ext.domains.Category" databaseId="oracle">
+		SELECT 
+			ID as id, 
+			NAME as name,
+			CREATED_AT as created_at,
+			UPDATED_AT as updated_at
+		FROM BOT_CATEGORIES
+		WHERE (ID = #{name} OR NAME = #{name})
+	</select>
+		
+	<insert id="save" parameterType="com.oracle.oda.ext.domains.Category" databaseId="oracle">
+	    MERGE INTO BOT_CATEGORIES d 
+	    USING ( 
+	    	SELECT #{id} AS ID, 
+	    		#{name} AS NAME, 
+	    		#{created_at} AS CREATED_AT, 
+	    		#{updated_at} AS UPDATED_AT 
+	    	FROM DUAL ) s
+	    ON (s.NAME = d.NAME )
+	    WHEN NOT MATCHED THEN
+			INSERT
+			(
+				ID,
+				NAME,
+				CREATED_AT,
+				UPDATED_AT
+			) VALUES (
+				s.ID,
+				s.NAME,
+				s.CREATED_AT,
+				s.UPDATED_AT
+			)
+		WHEN MATCHED THEN
+		 	UPDATE
+		 	SET	UPDATED_AT = s.UPDATED_AT
+	</insert>
+	
+	<delete id="deleteAll" databaseId="oracle">
+		DELETE FROM BOT_CATEGORIES
+	</delete>
+</mapper>

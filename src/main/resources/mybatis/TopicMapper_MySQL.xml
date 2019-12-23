@@ -1,0 +1,65 @@
+<!DOCTYPE mapper
+    PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+    "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+
+<mapper namespace="com.oracle.oda.ext.dao.TopicMapper">
+	
+	<select id="list" resultType="com.oracle.oda.ext.domains.Topic" databaseId="mysql">
+		SELECT 
+			t.ID as id, 
+			c.NAME as category,
+			t.QUESTION as question,
+			t.ANSWER as answer,
+			t.HEAT as heat,
+			t.CREATED_AT as created_at,
+			t.UPDATED_AT as updated_at
+		FROM BOT_TOPICS t
+		 JOIN BOT_CATEGORIES c
+		   ON (t.CATEGORY = c.ID OR t.CATEGORY = c.NAME)
+		WHERE 1=1
+		<if test="category != null">
+			AND (c.ID = #{category} OR c.NAME = #{category})
+		</if>
+		ORDER BY t.HEAT DESC, t.CREATED_AT DESC
+		LIMIT #{offset}, #{limit}
+	</select>
+		
+	<insert id="insert" parameterType="com.oracle.oda.ext.domains.Topic" databaseId="mysql">
+		INSERT INTO BOT_TOPICS
+		(
+			ID,
+			SECTION,
+			CATEGORY,
+			QUESTION,
+			ANSWER,
+			HEAT,
+			CREATED_AT,
+			UPDATED_AT
+		) VALUES (
+			#{id},
+			#{section},
+			#{category},
+			#{question},
+			#{answer},
+			#{heat},
+			#{created_at},
+			#{updated_at}
+		)
+	</insert>
+	
+	<update id="update" parameterType="com.oracle.oda.ext.domains.Topic" databaseId="mysql">
+		UPDATE BOT_TOPICS
+		SET
+			SECTION=#{section},
+			CATEGORY=#{category},
+			QUESTION=#{question},
+			ANSWER=#{answer},
+			HEAT=#{heat},
+			UPDATED_AT=#{updated_at}
+		WHERE ID=#{id}
+	</update>
+	
+	<delete id="deleteAll" databaseId="mysql">
+		DELETE FROM BOT_TOPICS
+	</delete>
+</mapper>

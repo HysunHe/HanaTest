@@ -1,0 +1,82 @@
+<!DOCTYPE mapper
+    PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+    "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+
+<mapper namespace="com.oracle.oda.ext.dao.FileMapper">
+	
+	<select id="query" resultType="com.oracle.oda.ext.domains.File" databaseId="oracle">
+		SELECT 
+			ID as id, 
+			SERIAL_NO as serial_no,
+			CHECKSUM as checksum,
+			FILENAME as filename,
+			FILE_ID as file_id,
+			LINK_ID as link_id,
+			PUBLIC_URI as public_uri,
+			BATCH_NUMBER as batch_number,
+			COMMODITY_ID as commodity_id,
+			CREATED_AT as created_at,
+			UPDATED_AT as updated_at
+		FROM BOT_FILES
+		WHERE 1=1
+		<if test="commodity_id != null">
+			AND COMMODITY_ID = #{commodity_id}
+		</if>
+		<if test="batch_number != null">
+			AND BATCH_NUMBER = #{batch_number}
+		</if>
+		ORDER BY UPDATED_AT DESC
+		OFFSET #{offset} ROWS
+		FETCH NEXT #{limit} ROWS ONLY
+	</select>
+		
+	<insert id="save" parameterType="com.oracle.oda.ext.domains.File" databaseId="oracle">
+	    MERGE INTO BOT_FILES d 
+	    USING ( 
+	    	SELECT #{id} AS ID, 
+				#{serial_no} AS SERIAL_NO,
+				#{checksum} AS CHECKSUM,
+				#{filename} AS FILENAME,
+				#{file_id} AS FILE_ID,
+				#{link_id} AS LINK_ID,
+				#{public_uri} AS PUBLIC_URI,
+				#{batch_number} AS BATCH_NUMBER,
+				#{commodity_id} AS COMMODITY_ID,
+	    		#{created_at} AS CREATED_AT, 
+	    		#{updated_at} AS UPDATED_AT 
+	    	FROM DUAL ) s
+	    ON (s.SERIAL_NO = d.SERIAL_NO )
+	    WHEN NOT MATCHED THEN
+			INSERT
+			(
+				ID,
+				SERIAL_NO,
+				CHECKSUM,
+				FILENAME,
+				FILE_ID,
+				LINK_ID,
+				PUBLIC_URI,
+				BATCH_NUMBER,
+				COMMODITY_ID,
+				CREATED_AT,
+				UPDATED_AT
+			) VALUES (
+				s.ID,
+				s.SERIAL_NO,
+				s.CHECKSUM,
+				s.FILENAME,
+				s.FILE_ID,
+				s.LINK_ID,
+				s.PUBLIC_URI,
+				s.BATCH_NUMBER,
+				s.COMMODITY_ID,
+				s.CREATED_AT,
+				s.UPDATED_AT
+			)
+		WHEN MATCHED THEN
+		 	UPDATE
+		 	SET	CHECKSUM = s.CHECKSUM,
+		 		UPDATED_AT = s.UPDATED_AT
+		 		
+	</insert>
+</mapper>

@@ -1,0 +1,47 @@
+<!DOCTYPE mapper
+    PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+    "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+
+<mapper namespace="com.oracle.oda.ext.dao.QuestionMapper">
+	
+	<select id="list" resultType="com.oracle.oda.ext.domains.Question" databaseId="mysql">
+		SELECT 
+			ID as id, 
+			USER_ID as user_id,
+			QUESTION as question,
+			CREATED_AT as created_at,
+			UPDATED_AT as updated_at
+		FROM BOT_QUESTIONS
+		ORDER BY CREATED_AT DESC
+		LIMIT #{offset}, #{limit}
+	</select>
+	
+	<select id="queryByTime" resultType="com.oracle.oda.ext.domains.Question" databaseId="mysql">
+		SELECT 
+			ID as id, 
+			USER_ID as user_id,
+			QUESTION as question,
+			CREATED_AT as created_at,
+			UPDATED_AT as updated_at
+		FROM BOT_QUESTIONS
+		WHERE CREATED_AT <![CDATA[ >= ]]> #{from} AND CREATED_AT <![CDATA[ < ]]> #{to}
+		ORDER BY CREATED_AT DESC
+	</select>
+		
+	<insert id="save" parameterType="com.oracle.oda.ext.domains.Question" databaseId="mysql">
+		REPLACE INTO BOT_QUESTIONS
+		(
+			ID,
+			USER_ID,
+			QUESTION,
+			CREATED_AT,
+			UPDATED_AT
+		) VALUES (
+			#{id}, 
+    		#{user_id}, 
+    		#{question}, 
+    		#{created_at}, 
+    		#{updated_at} 
+		)
+	</insert>
+</mapper>
