@@ -2,6 +2,6 @@
 
 echo "Begin..."
 
-mvn clean package && java -jar target/bot-gateway-springboot.jar
+mvn clean package && java -jar target/ssp.jar
 
 echo "Done\n"

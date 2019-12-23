@@ -2,5 +2,5 @@
 
 TAG=`date '+%Y-%m-%d-%H-%M-%S'`
 
-docker build . -t hysunhe/botgateway:${TAG}
-docker tag hysunhe/botgateway:${TAG}   hysunhe/botgateway:latest
+docker build . -t hysunhe/ssp:${TAG}
+docker tag hysunhe/ssp:${TAG}   hysunhe/ssp:latest
