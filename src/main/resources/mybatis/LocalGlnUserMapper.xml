@@ -20,6 +20,6 @@
 			ORG_CODE as orgCode, 
 			LOCAL_GLN_UUID as localGlnUuid
 		FROM SSP_LOCAL_GLN_USER
-		WHERE ORG_CODE=#{orgCode}
+		WHERE ORG_CODE=#{orgCode} AND ROWNUM=1
 	</select>
 </mapper>
