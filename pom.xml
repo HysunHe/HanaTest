@@ -51,13 +51,12 @@
 			<version>${c3p0.version}</version>
 		</dependency>
 		
-		<!-- mvn install:install-file -DgroupId=com.oracle.jdbc -DartifactId=ojdbc8 
-			-Dversion=18.3 -Dpackaging=jar -Dfile=/tmp/ojdbc8.jar -->
-		<dependency>
+		<!-- mvn install:install-file "-DgroupId=com.oracle.jdbc" "-DartifactId=ojdbc8" "-Dversion=18.3" "-Dpackaging=jar" "-Dfile=/home/oracle/hysun/HanaTest/ojdbc8-full/ojdbc8.jar" -->
+		<!-- dependency>
 			<groupId>com.oracle.jdbc</groupId>
 			<artifactId>ojdbc8</artifactId>
 			<version>${ojdbc.version}</version>
-		</dependency>
+		</dependency -->
 		
 		<dependency>
 			<groupId>mysql</groupId>
