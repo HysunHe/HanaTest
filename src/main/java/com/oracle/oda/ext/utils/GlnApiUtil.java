@@ -154,10 +154,18 @@ public final class GlnApiUtil {
 
 			LOGGER.info("GLN Header >>>");
 			JSONObject header = (JSONObject) json.get("GLN_HEADER");
+			if (header == null) {
+				LOGGER.error("createUUID null header: " + json.get("status"));
+				return null;
+			}
 			LOGGER.info(header.toString());
 
 			LOGGER.info("GLN Body >>>");
 			JSONObject body = (JSONObject) json.get("GLN_BODY");
+			if (body == null) {
+				LOGGER.error("createUUID null body: " + json.get("status"));
+				return null;
+			}
 			LOGGER.info(body.toString());
 
 			return (String) body.get("LOCALGLN_UUID");
@@ -191,10 +199,18 @@ public final class GlnApiUtil {
 
 			LOGGER.info("GLN Header >>>");
 			JSONObject header = (JSONObject) json.get("GLN_HEADER");
+			if (header == null) {
+				LOGGER.error("createUUID null header: " + json.get("status"));
+				return null;
+			}
 			LOGGER.info(header.toString());
 
 			LOGGER.info("GLN Body >>>");
 			JSONObject body = (JSONObject) json.get("GLN_BODY");
+			if (body == null) {
+				LOGGER.error("createUUID null body: " + json.get("status"));
+				return null;
+			}
 			LOGGER.info(body.toString());
 
 			JSONObject retMap = new JSONObject();
