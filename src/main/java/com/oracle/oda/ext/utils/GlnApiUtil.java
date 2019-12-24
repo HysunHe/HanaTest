@@ -152,13 +152,13 @@ public final class GlnApiUtil {
 			String jsonString = result.getResponseString();
 			JSONObject json = (JSONObject) JSONValue.parse(jsonString);
 
-			System.out.println("GLN Header >>>");
+			LOGGER.info("GLN Header >>>");
 			JSONObject header = (JSONObject) json.get("GLN_HEADER");
-			System.out.println(header);
+			LOGGER.info(header.toString());
 
-			System.out.println("GLN Body >>>");
+			LOGGER.info("GLN Body >>>");
 			JSONObject body = (JSONObject) json.get("GLN_BODY");
-			System.out.println(body);
+			LOGGER.info(body.toString());
 
 			return (String) body.get("LOCALGLN_UUID");
 		} catch (IOException e) {
@@ -189,13 +189,13 @@ public final class GlnApiUtil {
 			String jsonString = result.getResponseString();
 			JSONObject json = (JSONObject) JSONValue.parse(jsonString);
 
-			System.out.println("GLN Header >>>");
+			LOGGER.info("GLN Header >>>");
 			JSONObject header = (JSONObject) json.get("GLN_HEADER");
-			System.out.println(header);
+			LOGGER.info(header.toString());
 
-			System.out.println("GLN Body >>>");
+			LOGGER.info("GLN Body >>>");
 			JSONObject body = (JSONObject) json.get("GLN_BODY");
-			System.out.println(body);
+			LOGGER.info(body.toString());
 
 			JSONObject retMap = new JSONObject();
 			retMap.put("PAY_CODE", body.get("PAY_K"));

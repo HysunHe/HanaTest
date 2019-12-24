@@ -115,7 +115,7 @@ public class SspController {
 	}
 
 	@SuppressWarnings("unchecked")
-	@RequestMapping(value = "/gencode", method = RequestMethod.POST)
+	@RequestMapping(value = "/gencode", method = RequestMethod.GET)
 	public ResponseEntity<JSONObject> genCodeContent() {
 		LOGGER.info("*** Got genCodeContent request ***");
 		String authId = GlnApiUtil.REQ_ORG_CODE_GSKOAA;
