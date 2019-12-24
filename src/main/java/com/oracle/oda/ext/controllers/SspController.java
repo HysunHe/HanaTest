@@ -69,12 +69,18 @@ public class SspController {
 				|| StringUtil.isBlank(payCode) || StringUtil.isBlank(paymentNo)
 				|| StringUtil.isBlank(amount)
 				|| StringUtil.isBlank(exchangeRate)
-				|| StringUtil.isBlank(currencyCode)
-				|| !StringUtil.isDouble(amount)) {
+				|| StringUtil.isBlank(currencyCode)) {
 			resp.put("ResMsg", "Missing required parameter(s).");
 			resp.put("Status", HttpStatus.BAD_REQUEST);
 			return ResponseEntity.status(HttpStatus.OK).body(resp);
 		}
+
+		if (!StringUtil.isDouble(amount)) {
+			resp.put("ResMsg", "Parameter format error: amount - " + amount);
+			resp.put("Status", HttpStatus.BAD_REQUEST);
+			return ResponseEntity.status(HttpStatus.OK).body(resp);
+		}
+
 		// {
 		// "guid": "TOSSKRGCX00000110",
 		// "glnTxNo": "201912190419058570806789535744",
