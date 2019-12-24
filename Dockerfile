@@ -1,12 +1,8 @@
-#FROM openjdk:8-jdk-alpine
-
 FROM store/oracle/serverjre:8
 
 RUN mkdir -p /u01/app/Wallet
 
 COPY ./target/ssp.jar /u01/app
-
-#COPY ./Wallet_SKBBPOCDB.zip /u01/app
 
 COPY ./ojdbc8-full/* /u01/app/
 
