@@ -54,7 +54,7 @@ public final class GlnApiUtil {
 	public static final String COUNTRY_CODE = "AA";
 	public static final String CURRENCY_CODE = "AAD";
 	public static final String ALGORITHM = "HmacSHA256";
-	// public static final String AUTH_ID = "GSKOUP";
+	public static final String DATEFORMAT = "yyyyMMddHHmmss";
 	public static final String AUTH_SECRET = "3342504754796D56567A746E797A7953324837476F456F634B61423538463344";
 
 	public static String generateGLNAuthnToken(String authId, String authSecret,
