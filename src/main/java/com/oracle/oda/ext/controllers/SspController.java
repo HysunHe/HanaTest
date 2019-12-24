@@ -18,6 +18,7 @@ import org.springframework.web.bind.annotation.RestController;
 
 import com.oracle.oda.ext.dto.JsonResponse;
 import com.oracle.oda.ext.utils.DateUtil;
+import com.oracle.oda.ext.utils.StringUtil;
 
 /***************************************************************************
  * <PRE>
@@ -54,8 +55,26 @@ public class SspController {
 	@RequestMapping(value = "/approval", method = RequestMethod.POST)
 	public ResponseEntity<JSONObject> approvePayment(
 			@RequestBody JSONObject o) {
+		JSONObject resp = new JSONObject();
+
 		LOGGER.info("*** Got approvePayment request: " + o);
+		String guid = (String) o.get("guid");
 		String glnTxNo = (String) o.get("glnTxNo");
+		String payCode = (String) o.get("payCode");
+		String paymentNo = (String) o.get("paymentNo");
+		String amount = (String) o.get("amount");
+		String exchangeRate = (String) o.get("exchangeRate");
+		String currencyCode = (String) o.get("currencyCode");
+		if (StringUtil.isBlank(guid) || StringUtil.isBlank(glnTxNo)
+				|| StringUtil.isBlank(payCode) || StringUtil.isBlank(paymentNo)
+				|| StringUtil.isBlank(amount)
+				|| StringUtil.isBlank(exchangeRate)
+				|| StringUtil.isBlank(currencyCode)
+				|| !StringUtil.isDouble(amount)) {
+			resp.put("ResMsg", "Missing required parameter(s).");
+			resp.put("Status", HttpStatus.BAD_REQUEST);
+			return ResponseEntity.status(HttpStatus.OK).body(resp);
+		}
 		// {
 		// "guid": "TOSSKRGCX00000110",
 		// "glnTxNo": "201912190419058570806789535744",
@@ -70,7 +89,7 @@ public class SspController {
 		// "settlementDate": "20191220",
 		// "apiKey": "sk_gln_4Q2kz1R8Wya0kz1bgzvW"
 		// }
-		JSONObject resp = new JSONObject();
+
 		// {
 		// "resultType": "SUCCESS",
 		// "status": "Completed",
