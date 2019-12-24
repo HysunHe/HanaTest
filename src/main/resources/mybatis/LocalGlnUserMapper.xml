@@ -1,0 +1,25 @@
+<!DOCTYPE mapper
+    PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+    "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+
+<mapper namespace="com.oracle.oda.ext.dao.LocalGlnUserMapper">
+	
+	<insert id="insert" parameterType="com.oracle.oda.ext.domains.LocalGlnUser" databaseId="oracle">
+		INSERT INTO SSP_LOCAL_GLN_USER
+		(
+			ORG_CODE,
+			LOCAL_GLN_UUID
+		) VALUES (
+			#{orgCode},
+			#{localGlnUuid,jdbcType=VARCHAR}
+		)
+	</insert>
+	
+	<select id="get" resultType="com.oracle.oda.ext.domains.LocalGlnUser" databaseId="oracle">
+		SELECT 
+			ORG_CODE as orgCode, 
+			LOCAL_GLN_UUID as localGlnUuid
+		FROM SSP_LOCAL_GLN_USER
+		WHERE ORG_CODE=#{orgCode}
+	</select>
+</mapper>

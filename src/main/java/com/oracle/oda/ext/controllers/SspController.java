@@ -6,12 +6,10 @@
 
 package com.oracle.oda.ext.controllers;
 
-import java.util.concurrent.ConcurrentHashMap;
-import java.util.concurrent.ConcurrentMap;
-
 import org.json.simple.JSONObject;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.RequestBody;
@@ -19,7 +17,9 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestMethod;
 import org.springframework.web.bind.annotation.RestController;
 
+import com.oracle.oda.ext.domains.LocalGlnUser;
 import com.oracle.oda.ext.dto.JsonResponse;
+import com.oracle.oda.ext.services.LocalGlnUserService;
 import com.oracle.oda.ext.utils.DateUtil;
 import com.oracle.oda.ext.utils.GlnApiUtil;
 import com.oracle.oda.ext.utils.StringUtil;
@@ -49,7 +49,8 @@ public class SspController {
 	private static final Logger LOGGER = LoggerFactory
 			.getLogger(SspController.class);
 
-	private static ConcurrentMap<String, String> uuidMap = new ConcurrentHashMap<>();
+	@Autowired
+	private LocalGlnUserService glnUserSvc;
 
 	@RequestMapping(value = "/ping", method = RequestMethod.GET)
 	public ResponseEntity<JsonResponse> ping() {
@@ -119,20 +120,22 @@ public class SspController {
 	public ResponseEntity<JSONObject> genCodeContent() {
 		LOGGER.info("*** Got genCodeContent request ***");
 		String authId = GlnApiUtil.REQ_ORG_CODE_GSKOAA;
-		String uuid = uuidMap.get(authId);
-		if (StringUtil.isBlank(uuid)) {
-			uuid = GlnApiUtil.createUUID(authId);
-			uuidMap.put(authId, uuid);
+		LocalGlnUser glnUser = glnUserSvc.get(authId);
+		if (glnUser == null) {
+			String uuid = GlnApiUtil.createUUID(authId);
+			glnUser = new LocalGlnUser(authId, uuid);
+			glnUserSvc.insert(glnUser);
 		}
-		LOGGER.info("*** Generated LOCALGLN_UUID: " + uuid);
-		if (StringUtil.isBlank(uuid)) {
+		LOGGER.info("*** Generated LOCALGLN_UUID: " + glnUser);
+		if (StringUtil.isBlank(glnUser.getLocalGlnUuid())) {
 			JSONObject resp = new JSONObject();
 			resp.put("ResMsg", "Cannot get LOCALGLN_UUID!");
 			resp.put("Status", HttpStatus.BAD_REQUEST);
 			return ResponseEntity.status(HttpStatus.OK).body(resp);
 		}
 
-		JSONObject resp = GlnApiUtil.genCodeContent(uuid, authId);
+		JSONObject resp = GlnApiUtil.genCodeContent(glnUser.getLocalGlnUuid(),
+				authId);
 		LOGGER.info("*** Pay Code: " + resp.get("PAY_CODE"));
 		LOGGER.info("*** QR Code: " + resp.get("QR_CODE"));
 		LOGGER.info("*** BAR Code: " + resp.get("BAR_CODE"));
