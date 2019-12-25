@@ -17,9 +17,11 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestMethod;
 import org.springframework.web.bind.annotation.RestController;
 
+import com.oracle.oda.ext.domains.CpmTransaction;
 import com.oracle.oda.ext.domains.LocalGlnUser;
 import com.oracle.oda.ext.dto.JsonResponse;
 import com.oracle.oda.ext.services.LocalGlnUserService;
+import com.oracle.oda.ext.services.TransactionService;
 import com.oracle.oda.ext.utils.DateUtil;
 import com.oracle.oda.ext.utils.GlnApiUtil;
 import com.oracle.oda.ext.utils.StringUtil;
@@ -51,6 +53,9 @@ public class SspController {
 
 	@Autowired
 	private LocalGlnUserService glnUserSvc;
+
+	@Autowired
+	private TransactionService txSvc;
 
 	@RequestMapping(value = "/ping", method = RequestMethod.GET)
 	public ResponseEntity<JsonResponse> ping() {
@@ -85,6 +90,7 @@ public class SspController {
 		String amount = (String) o.get("amount");
 		String exchangeRate = (String) o.get("exchangeRate");
 		String currencyCode = (String) o.get("currencyCode");
+
 		if (StringUtil.isBlank(guid) || StringUtil.isBlank(glnTxNo)
 				|| StringUtil.isBlank(payCode) || StringUtil.isBlank(paymentNo)
 				|| StringUtil.isBlank(amount)
@@ -107,11 +113,25 @@ public class SspController {
 		// "glnTxNo": "201912200715390987153813291013",
 		// "resTxDateTime": "20191220161545"
 		// }
+		final String resTxDateTime = DateUtil.date2String(DateUtil.now(),
+				"yyyyMMddHHmmss");
+		final String status = "Completed";
 		resp.put("resultType", "SUCCESS");
-		resp.put("status", "Completed");
+		resp.put("status", status);
 		resp.put("glnTxNo", glnTxNo);
-		resp.put("resTxDateTime",
-				DateUtil.date2String(DateUtil.now(), "yyyyMMddHHmmss"));
+		resp.put("resTxDateTime", resTxDateTime);
+
+		CpmTransaction tx = new CpmTransaction();
+		tx.setReqOrgCode(guid);
+		tx.setGlnTxNo(glnTxNo);
+		tx.setPayCode(payCode);
+		tx.setTxAmt(Float.valueOf(amount));
+		tx.setTxExRate(Float.valueOf(exchangeRate));
+		tx.setTxCur(currencyCode);
+		tx.setStatus(status);
+		tx.setApproveDateTime(resTxDateTime);
+		txSvc.insert(tx);
+
 		return ResponseEntity.status(HttpStatus.OK).body(resp);
 	}
 

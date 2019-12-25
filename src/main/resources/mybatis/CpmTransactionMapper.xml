@@ -1,0 +1,64 @@
+<!DOCTYPE mapper
+    PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+    "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+
+<mapper namespace="com.oracle.oda.ext.dao.CpmTransactionMapper">
+	
+	<insert id="insert" parameterType="com.oracle.oda.ext.domains.CpmTransaction" databaseId="oracle">
+		INSERT INTO SSP_TRANSACTIONS
+		(
+			REQ_ORG_CODE,
+			REQ_ORG_TX_DATE,
+			REQ_ORG_TX_TIME,
+			GLN_TX_NO,
+			PAY_CODE,
+			BAR_CODE,
+			QR_CODE,
+			VALID_SECOND,
+			ORIG_BALANCE,
+			NEW_BALANCE,
+			TX_AMT,
+			TX_CUR,
+			TX_EX_RATE,
+			STATUS,
+			APPROVE_DATETIME
+		) VALUES (
+			#{reqOrgCode,jdbcType=VARCHAR},
+			#{reqOrgTxDate,jdbcType=VARCHAR},
+			#{reqOrgTxTime,jdbcType=VARCHAR},
+			#{glnTxNo,jdbcType=VARCHAR},
+			#{payCode,jdbcType=VARCHAR},
+			#{BAR_CODE,jdbcType=VARCHAR},
+			#{QR_CODE,jdbcType=VARCHAR},
+			#{VALID_SECOND,jdbcType=INTEGER},
+			#{origBalance,jdbcType=FLOAT},
+			#{newBalance,jdbcType=FLOAT},
+			#{txAmt,jdbcType=FLOAT},
+			#{txCur,jdbcType=VARCHAR},
+			#{txExRate,jdbcType=FLOAT},
+			#{status,jdbcType=VARCHAR},
+			#{approveDateTime,jdbcType=VARCHAR}
+		)
+	</insert>
+	
+	<select id="get" resultType="com.oracle.oda.ext.domains.CpmTransaction" databaseId="oracle">
+		SELECT 
+			REQ_ORG_CODE as reqOrgCode,
+			REQ_ORG_TX_DATE as reqOrgTxDate,
+			REQ_ORG_TX_TIME as reqOrgTxTime,
+			GLN_TX_NO as glnTxNo,
+			PAY_CODE as payCode,
+			BAR_CODE as barCode,
+			QR_CODE as qrCode,
+			VALID_SECOND as validSecond,
+			ORIG_BALANCE as origBalance,
+			NEW_BALANCE as newBalance,
+			TX_AMT as txAmt,
+			TX_CUR as txCur,
+			TX_EX_RATE as txExRate,
+			STATUS as status,
+			APPROVE_DATETIME as approveDateTime 
+		FROM SSP_TRANSACTIONS
+		WHERE GLN_TX_NO=#{glnTxNo} AND STATUS='Completed'
+	</select>
+</mapper>
