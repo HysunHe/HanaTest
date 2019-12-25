@@ -47,9 +47,9 @@ import com.oracle.oda.ext.utils.StringUtil;
  ***************************************************************************/
 @RestController
 @RequestMapping("/cpm")
-public class SspController {
+public class CpmController {
 	private static final Logger LOGGER = LoggerFactory
-			.getLogger(SspController.class);
+			.getLogger(CpmController.class);
 
 	@Autowired
 	private LocalGlnUserService glnUserSvc;
