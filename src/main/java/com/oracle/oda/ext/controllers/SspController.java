@@ -154,12 +154,39 @@ public class SspController {
 			return ResponseEntity.status(HttpStatus.OK).body(resp);
 		}
 
-		JSONObject resp = GlnApiUtil.genCodeContent(glnUser.getLocalGlnUuid(),
-				authId);
+		JSONObject payload = GlnApiUtil
+				.genCodeContent(glnUser.getLocalGlnUuid(), authId);
+		if (payload == null) {
+			JSONObject resp = new JSONObject();
+			resp.put("ResMsg", "Error generate qr/bar code!");
+			resp.put("Status", HttpStatus.BAD_REQUEST);
+			return ResponseEntity.status(HttpStatus.OK).body(resp);
+		}
+
+		JSONObject body = (JSONObject) payload.get("GLN_BODY");
+		JSONObject resp = new JSONObject();
+		resp.put("PAY_CODE", body.get("PAY_K"));
+		resp.put("BAR_CODE", body.get("PAY_K_BAR"));
+		resp.put("QR_CODE", body.get("PAY_K_QR"));
+		resp.put("VALID_SECOND", body.get("VALID_SECOND"));
+
 		LOGGER.info("*** Pay Code: " + resp.get("PAY_CODE"));
 		LOGGER.info("*** QR Code: " + resp.get("QR_CODE"));
 		LOGGER.info("*** BAR Code: " + resp.get("BAR_CODE"));
 		LOGGER.info("*** VALID SECOND: " + resp.get("VALID_SECOND"));
+
+		JSONObject header = (JSONObject) payload.get("GLN_HEADER");
+
+		CpmTransaction tx = new CpmTransaction();
+		tx.setReqOrgCode(glnUser.getLocalGlnUuid());
+		tx.setGlnTxNo((String) header.get("GLN_TX_NO"));
+		tx.setQrCode((String) resp.get("QR_CODE"));
+		tx.setBarCode((String) resp.get("BAR_CODE"));
+		tx.setReqOrgTxDate((String) header.get("REQ_ORG_TX_DATE"));
+		tx.setReqOrgTxTime((String) header.get("REQ_ORG_TX_TIME"));
+		tx.setValidSecond(Integer.valueOf((String) resp.get("VALID_SECOND")));
+		tx.setStatus("Generated");
+		txSvc.insert(tx);
 
 		return ResponseEntity.status(HttpStatus.OK).body(resp);
 	}

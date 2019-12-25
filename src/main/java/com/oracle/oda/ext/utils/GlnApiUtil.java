@@ -219,7 +219,7 @@ public final class GlnApiUtil {
 			retMap.put("QR_CODE", body.get("PAY_K_QR"));
 			retMap.put("VALID_SECOND", body.get("VALID_SECOND"));
 
-			return retMap;
+			return json;
 		} catch (IOException e) {
 			LOGGER.error("genCodeContent error: " + e.toString(), e);
 			return null;
