@@ -34,5 +34,6 @@ import com.oracle.oda.ext.domains.CpmTransaction;
 public interface CpmTransactionMapper {
 	void insert(CpmTransaction o);
 
-	CpmTransaction get(@Param("glnTxNo") String glnTxNo);
+	CpmTransaction get(@Param("glnTxNo") String glnTxNo,
+			@Param("status") String status);
 }

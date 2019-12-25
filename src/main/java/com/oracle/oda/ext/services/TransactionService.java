@@ -42,9 +42,9 @@ public class TransactionService {
 	@Autowired
 	private CpmTransactionMapper mapper;
 
-	public CpmTransaction get(String glnTxCode) {
+	public CpmTransaction get(String glnTxCode, String status) {
 		try {
-			return mapper.get(glnTxCode);
+			return mapper.get(glnTxCode, status);
 		} catch (Exception e) {
 			LOGGER.error("!!! get CpmTransaction", e);
 			throw new ApplicationException(e);
