@@ -182,9 +182,10 @@ public class CpmController {
 		tx.setGlnTxNo((String) header.get("GLN_TX_NO"));
 		tx.setQrCode((String) resp.get("QR_CODE"));
 		tx.setBarCode((String) resp.get("BAR_CODE"));
-		tx.setReqOrgTxDate((String) header.get("REQ_ORG_TX_DATE"));
-		tx.setReqOrgTxTime((String) header.get("REQ_ORG_TX_TIME"));
-		tx.setValidSecond(Integer.valueOf((String) resp.get("VALID_SECOND")));
+		tx.setReqOrgTxDate(String.valueOf(header.get("REQ_ORG_TX_DATE")));
+		tx.setReqOrgTxTime(String.valueOf(header.get("REQ_ORG_TX_TIME")));
+		tx.setValidSecond(
+				Integer.valueOf(String.valueOf(resp.get("VALID_SECOND"))));
 		tx.setStatus("Generated");
 		txSvc.insert(tx);
 
