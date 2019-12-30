@@ -208,18 +208,19 @@ public class CpmController {
 		}
 
 		JSONObject body = (JSONObject) payload.get("GLN_BODY");
+		JSONObject header = (JSONObject) payload.get("GLN_HEADER");
 		JSONObject resp = new JSONObject();
+		resp.put("GLN_TX_NO", header.get("GLN_TX_NO"));
 		resp.put("PAY_CODE", body.get("PAY_K"));
 		resp.put("BAR_CODE", body.get("PAY_K_BAR"));
 		resp.put("QR_CODE", body.get("PAY_K_QR"));
 		resp.put("VALID_SECOND", body.get("VALID_SECOND"));
 
+		LOGGER.info("*** GLN_TX_NO: " + resp.get("GLN_TX_NO"));
 		LOGGER.info("*** Pay Code: " + resp.get("PAY_CODE"));
 		LOGGER.info("*** QR Code: " + resp.get("QR_CODE"));
 		LOGGER.info("*** BAR Code: " + resp.get("BAR_CODE"));
 		LOGGER.info("*** VALID SECOND: " + resp.get("VALID_SECOND"));
-
-		JSONObject header = (JSONObject) payload.get("GLN_HEADER");
 
 		CpmTransaction tx = new CpmTransaction();
 		tx.setUserId(userId);

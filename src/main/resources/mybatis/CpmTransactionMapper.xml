@@ -64,4 +64,5 @@
 		FROM SSP_TRANSACTIONS
 		WHERE GLN_TX_NO=#{glnTxNo} AND STATUS=#{status} AND ROWNUM=1
 	</select>
+	
 </mapper>
