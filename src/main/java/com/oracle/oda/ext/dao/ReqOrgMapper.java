@@ -9,7 +9,7 @@ package com.oracle.oda.ext.dao;
 import org.apache.ibatis.annotations.Mapper;
 import org.apache.ibatis.annotations.Param;
 
-import com.oracle.oda.ext.domains.LocalGlnUser;
+import com.oracle.oda.ext.domains.ReqOrg;
 
 /***************************************************************************
  * <PRE>
@@ -17,9 +17,9 @@ import com.oracle.oda.ext.domains.LocalGlnUser;
  * 
  *  Package Name    : com.oracle.oda.ext.dao
  * 
- *  File Name       : LocalGlnUserMapper.java
+ *  File Name       : ReqOrgMapper.java
  * 
- *  Creation Date   : 2019年12月24日
+ *  Creation Date   : 2019年12月30日
  * 
  *  Author          : Hysun He
  * 
@@ -31,14 +31,8 @@ import com.oracle.oda.ext.domains.LocalGlnUser;
  * </PRE>
  ***************************************************************************/
 @Mapper
-public interface LocalGlnUserMapper {
-	void insert(LocalGlnUser o);
+public interface ReqOrgMapper {
+	void insert(ReqOrg o);
 
-	LocalGlnUser get(@Param("userId") String userId);
-
-	void updateGlnUuid(@Param("userId") String userId,
-			@Param("localGlnUuid") String localGlnUuid);
-
-	void updateBalance(@Param("userId") String userId,
-			@Param("balance") double balance);
+	ReqOrg get(@Param("orgCode") String orgCode);
 }

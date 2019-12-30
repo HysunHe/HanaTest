@@ -54,12 +54,10 @@ public final class GlnApiUtil {
 
 	public static final String GLN_API_BASE = "https://test-api.glnpay.com:9000/api/v1/";
 	public static final String GLN_API_BASE_V2 = "https://test-api.glnpay.com:9000/api/v2/";
-	public static final String REQ_ORG_CODE_GSKOAA = "GSKOAA";
 	public static final String COUNTRY_CODE = "AA";
 	public static final String CURRENCY_CODE = "AAD";
 	public static final String ALGORITHM = "HmacSHA256";
 	public static final String DATEFORMAT = "yyyyMMddHHmmss";
-	public static final String AUTH_SECRET = "3342504754796D56567A746E797A7953324837476F456F634B61423538463344";
 
 	static {
 		ServiceCallClient.setHttpsPort(9000);
@@ -98,10 +96,9 @@ public final class GlnApiUtil {
 	}
 
 	public static Map<String, String> getGenericHttpHeader(Date date,
-			String client) {
+			String authId, String secret) {
 		String timestamp = String.valueOf(date.getTime());
-		String authorization = generateGLNAuthnToken(client, AUTH_SECRET,
-				timestamp);
+		String authorization = generateGLNAuthnToken(authId, secret, timestamp);
 		Map<String, String> headers = new HashMap<>();
 		headers.put("Accept", "application/json");
 		headers.put("Content-Type", "application/json;charset=utf-8");
@@ -114,13 +111,13 @@ public final class GlnApiUtil {
 	}
 
 	@SuppressWarnings("unchecked")
-	public static JSONObject getGenericGlnHeader(Date date, String client) {
+	public static JSONObject getGenericGlnHeader(Date date, String org) {
 		String txDate = DateUtil.date2String(date, "yyyyMMdd");
 		String txTime = DateUtil.date2String(date, "HHmmss");
 		String txNo = txDate + "0" + String.valueOf(new Random()
 				.ints(10000000, 100000000).limit(1).findFirst().getAsInt());
 		JSONObject o1 = new JSONObject();
-		o1.put("REQ_ORG_CODE", client);
+		o1.put("REQ_ORG_CODE", org);
 		o1.put("REQ_ORG_TX_DATE", txDate);
 		o1.put("REQ_ORG_TX_TIME", txTime);
 		o1.put("REQ_ORG_TX_NO", txNo);
@@ -132,12 +129,12 @@ public final class GlnApiUtil {
 	}
 
 	@SuppressWarnings("unchecked")
-	public static String createUUID(String authId) {
+	public static String createUUID(String authId, String secret) {
 		String url = GlnApiUtil.GLN_API_BASE + "members/uuid-creation";
 		Date date = new Date();
 
 		Map<String, String> headers = GlnApiUtil.getGenericHttpHeader(date,
-				authId);
+				authId, secret);
 		JSONObject o2 = new JSONObject();
 		o2.put("LOCALGLN_TEMP_UUID", String.valueOf(new Random()
 				.ints(10000000, 100000000).limit(1).findFirst().getAsInt()));
@@ -176,11 +173,12 @@ public final class GlnApiUtil {
 	}
 
 	@SuppressWarnings("unchecked")
-	public static JSONObject genCodeContent(String uuid, String authId) {
+	public static JSONObject genCodeContent(String uuid, String authId,
+			String secret) {
 		String url = GlnApiUtil.GLN_API_BASE_V2 + "payments/cpm/qr-generation";
 		Date date = new Date();
 		Map<String, String> headers = GlnApiUtil.getGenericHttpHeader(date,
-				authId);
+				authId, secret);
 
 		JSONObject o2 = new JSONObject();
 		o2.put("LOCALGLN_UUID", uuid);
@@ -213,12 +211,6 @@ public final class GlnApiUtil {
 			}
 			LOGGER.info(body.toString());
 
-			JSONObject retMap = new JSONObject();
-			retMap.put("PAY_CODE", body.get("PAY_K"));
-			retMap.put("BAR_CODE", body.get("PAY_K_BAR"));
-			retMap.put("QR_CODE", body.get("PAY_K_QR"));
-			retMap.put("VALID_SECOND", body.get("VALID_SECOND"));
-
 			return json;
 		} catch (IOException e) {
 			LOGGER.error("genCodeContent error: " + e.toString(), e);
@@ -227,16 +219,20 @@ public final class GlnApiUtil {
 	}
 
 	public static void main(String[] args) {
+		final String REQ_ORG_CODE = "GSKOAA";
+		String AUTH_SECRET = "3342504754796D56567A746E797A7953324837476F456F634B61423538463344";
+
 		System.out.println("*** Creating UUID ***");
-		String uuid = GlnApiUtil.createUUID(GlnApiUtil.REQ_ORG_CODE_GSKOAA);
+		String uuid = GlnApiUtil.createUUID(REQ_ORG_CODE, AUTH_SECRET);
 		System.out.println("*** LOCALGLN_UUID: " + uuid);
 
 		System.out.println("*** Generating QR Code Content ***");
-		JSONObject map = GlnApiUtil.genCodeContent(uuid,
-				GlnApiUtil.REQ_ORG_CODE_GSKOAA);
-		System.out.println("*** Pay Code: " + map.get("PAY_CODE"));
-		System.out.println("*** QR Code: " + map.get("QR_CODE"));
-		System.out.println("*** BAR Code: " + map.get("BAR_CODE"));
-		System.out.println("*** VALID SECOND: " + map.get("VALID_SECOND"));
+		JSONObject payload = GlnApiUtil.genCodeContent(uuid, REQ_ORG_CODE,
+				AUTH_SECRET);
+		JSONObject body = (JSONObject) payload.get("GLN_BODY");
+		System.out.println("*** Pay Code: " + body.get("PAY_K"));
+		System.out.println("*** QR Code: " + body.get("PAY_K_QR"));
+		System.out.println("*** BAR Code: " + body.get("PAY_K_BAR"));
+		System.out.println("*** VALID SECOND: " + body.get("VALID_SECOND"));
 	}
 }

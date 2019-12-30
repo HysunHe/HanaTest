@@ -7,19 +7,36 @@
 	<insert id="insert" parameterType="com.oracle.oda.ext.domains.LocalGlnUser" databaseId="oracle">
 		INSERT INTO SSP_LOCAL_GLN_USER
 		(
+			USER_ID,
+			USER_NAME,
 			ORG_CODE,
-			LOCAL_GLN_UUID
+			LOCAL_GLN_UUID,
+			BALANCE
 		) VALUES (
-			#{orgCode},
-			#{localGlnUuid,jdbcType=VARCHAR}
+			#{userId,jdbcType=VARCHAR},
+			#{userName,jdbcType=VARCHAR},
+			#{orgCode,jdbcType=VARCHAR},
+			#{localGlnUuid,jdbcType=VARCHAR},
+			#{balance,jdbcType=DOUBLE}
 		)
 	</insert>
 	
+	<update id="updateGlnUuid" databaseId="oracle">
+		update SSP_LOCAL_GLN_USER set LOCAL_GLN_UUID = #{localGlnUuid} WHERE USER_ID=#{userId}
+	</update>
+	
+	<update id="updateBalance" databaseId="oracle">
+		update SSP_LOCAL_GLN_USER set BALANCE = #{balance} WHERE USER_ID=#{userId}
+	</update>
+	
 	<select id="get" resultType="com.oracle.oda.ext.domains.LocalGlnUser" databaseId="oracle">
 		SELECT 
+			USER_ID as userId,
+			USER_NAME as userName,
 			ORG_CODE as orgCode, 
-			LOCAL_GLN_UUID as localGlnUuid
+			LOCAL_GLN_UUID as localGlnUuid,
+			BALANCE as balance
 		FROM SSP_LOCAL_GLN_USER
-		WHERE ORG_CODE=#{orgCode} AND ROWNUM=1
+		WHERE USER_ID=#{userId}
 	</select>
 </mapper>

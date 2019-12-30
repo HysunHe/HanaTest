@@ -26,15 +26,13 @@ package com.oracle.oda.ext.domains;
  * </PRE>
  ***************************************************************************/
 public class LocalGlnUser {
+	private String userId;
+	private String userName;
 	private String orgCode;
 	private String localGlnUuid;
+	private Float balance;
 
 	public LocalGlnUser() {
-	}
-
-	public LocalGlnUser(String orgCode, String localGlnUuid) {
-		this.orgCode = orgCode;
-		this.localGlnUuid = localGlnUuid;
 	}
 
 	/**
@@ -67,6 +65,51 @@ public class LocalGlnUser {
 		this.localGlnUuid = localGlnUuid;
 	}
 
+	/**
+	 * @return the userId
+	 */
+	public String getUserId() {
+		return userId;
+	}
+
+	/**
+	 * @param userId
+	 *            the userId to set
+	 */
+	public void setUserId(String userId) {
+		this.userId = userId;
+	}
+
+	/**
+	 * @return the userName
+	 */
+	public String getUserName() {
+		return userName;
+	}
+
+	/**
+	 * @param userName
+	 *            the userName to set
+	 */
+	public void setUserName(String userName) {
+		this.userName = userName;
+	}
+
+	/**
+	 * @return the balance
+	 */
+	public Float getBalance() {
+		return balance;
+	}
+
+	/**
+	 * @param balance
+	 *            the balance to set
+	 */
+	public void setBalance(Float balance) {
+		this.balance = balance;
+	}
+
 	/*
 	 * (non-Javadoc)
 	 * 
@@ -74,7 +117,9 @@ public class LocalGlnUser {
 	 */
 	@Override
 	public String toString() {
-		return "LocalGlnUser [orgCode=" + orgCode + ", localGlnUuid="
-				+ localGlnUuid + "]";
+		return "LocalGlnUser [userId=" + userId + ", userName=" + userName
+				+ ", orgCode=" + orgCode + ", localGlnUuid=" + localGlnUuid
+				+ ", balance=" + balance + "]";
 	}
+
 }

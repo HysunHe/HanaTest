@@ -11,19 +11,19 @@ import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
-import com.oracle.oda.ext.dao.LocalGlnUserMapper;
-import com.oracle.oda.ext.domains.LocalGlnUser;
+import com.oracle.oda.ext.dao.ReqOrgMapper;
+import com.oracle.oda.ext.domains.ReqOrg;
 import com.oracle.oda.ext.exceptions.ApplicationException;
 
 /***************************************************************************
- * <PRE>
+ *<PRE>
  *  Project Name    : ssp
  * 
- *  Package Name    : com.oracle.oda.ext.services
+ *  Package Name    : com.oracle.oda.ext.domains
  * 
- *  File Name       : LocalGlnUserService.java
+ *  File Name       : ReqOrgService.java
  * 
- *  Creation Date   : 2019年12月24日
+ *  Creation Date   : 2019年12月30日
  * 
  *  Author          : Hysun He
  * 
@@ -32,43 +32,31 @@ import com.oracle.oda.ext.exceptions.ApplicationException;
  * 
  *  History         : TODO
  * 
- * </PRE>
+ *</PRE>
  ***************************************************************************/
 @Service
-public class LocalGlnUserService {
+public class ReqOrgService {
 	private static final Logger LOGGER = LoggerFactory
-			.getLogger(LocalGlnUserService.class);
+			.getLogger(ReqOrgService.class);
 
 	@Autowired
-	private LocalGlnUserMapper mapper;
+	private ReqOrgMapper mapper;
 
-	public LocalGlnUser get(String userId) {
+	public ReqOrg get(String orgCode) {
 		try {
-			return mapper.get(userId);
+			return mapper.get(orgCode);
 		} catch (Exception e) {
-			LOGGER.error("!!! get LocalGlnUser", e);
+			LOGGER.error("!!! get ReqOrg", e);
 			throw new ApplicationException(e);
 		}
 	}
 
-	public void insert(LocalGlnUser o) throws ApplicationException {
-		LOGGER.info("*** Inserting LocalGlnUser: " + o);
+	public void insert(ReqOrg o) throws ApplicationException {
+		LOGGER.info("*** Inserting ReqOrg: " + o);
 		try {
 			mapper.insert(o);
 		} catch (Exception e) {
-			LOGGER.error("!!! Error saving LocalGlnUser: " + o, e);
-			throw new ApplicationException(e);
-		}
-	}
-
-	public void updateGlnUuid(String userId, String uuid)
-			throws ApplicationException {
-		LOGGER.info("*** updateGlnUuid: " + userId + " | " + uuid);
-		try {
-			mapper.updateGlnUuid(userId, uuid);
-		} catch (Exception e) {
-			LOGGER.error("!!! Error updateGlnUuid: " + userId + " | " + uuid,
-					e);
+			LOGGER.error("!!! Error saving ReqOrg: " + o, e);
 			throw new ApplicationException(e);
 		}
 	}

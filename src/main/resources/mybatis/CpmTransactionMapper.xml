@@ -7,6 +7,7 @@
 	<insert id="insert" parameterType="com.oracle.oda.ext.domains.CpmTransaction" databaseId="oracle">
 		INSERT INTO SSP_TRANSACTIONS
 		(
+			USER_ID,
 			REQ_ORG_CODE,
 			REQ_ORG_TX_DATE,
 			REQ_ORG_TX_TIME,
@@ -23,6 +24,7 @@
 			STATUS,
 			APPROVE_DATETIME
 		) VALUES (
+			#{userId,jdbcType=VARCHAR},
 			#{reqOrgCode,jdbcType=VARCHAR},
 			#{reqOrgTxDate,jdbcType=VARCHAR},
 			#{reqOrgTxTime,jdbcType=VARCHAR},
@@ -43,6 +45,7 @@
 	
 	<select id="get" resultType="com.oracle.oda.ext.domains.CpmTransaction" databaseId="oracle">
 		SELECT 
+			USER_ID as userId,
 			REQ_ORG_CODE as reqOrgCode,
 			REQ_ORG_TX_DATE as reqOrgTxDate,
 			REQ_ORG_TX_TIME as reqOrgTxTime,

@@ -15,12 +15,15 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestMethod;
+import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
 
 import com.oracle.oda.ext.domains.CpmTransaction;
 import com.oracle.oda.ext.domains.LocalGlnUser;
+import com.oracle.oda.ext.domains.ReqOrg;
 import com.oracle.oda.ext.dto.JsonResponse;
 import com.oracle.oda.ext.services.LocalGlnUserService;
+import com.oracle.oda.ext.services.ReqOrgService;
 import com.oracle.oda.ext.services.TransactionService;
 import com.oracle.oda.ext.utils.DateUtil;
 import com.oracle.oda.ext.utils.GlnApiUtil;
@@ -52,6 +55,9 @@ public class CpmController {
 			.getLogger(CpmController.class);
 
 	@Autowired
+	private ReqOrgService orgSvc;
+
+	@Autowired
 	private LocalGlnUserService glnUserSvc;
 
 	@Autowired
@@ -68,7 +74,7 @@ public class CpmController {
 	public ResponseEntity<JSONObject> approvePayment(
 			@RequestBody JSONObject o) {
 		LOGGER.info("*** Got approvePayment request: " + o);
-		// {
+		// { // Sample Request Payload
 		// "guid": "TOSSKRGCX00000110",
 		// "glnTxNo": "201912190419058570806789535744",
 		// "reqTxDateTime": "20191219131905",
@@ -107,7 +113,7 @@ public class CpmController {
 			return ResponseEntity.status(HttpStatus.OK).body(resp);
 		}
 
-		// {
+		// { // Sample Response Payload
 		// "resultType": "SUCCESS",
 		// "status": "Completed",
 		// "glnTxNo": "201912200715390987153813291013",
@@ -122,10 +128,15 @@ public class CpmController {
 		resp.put("resTxDateTime", resTxDateTime);
 
 		CpmTransaction tx = new CpmTransaction();
+		CpmTransaction txOrig = txSvc.get(glnTxNo, "Generated");
+		LocalGlnUser user = glnUserSvc.get(txOrig.getUserId());
+		tx.setUserId(txOrig.getUserId());
+		tx.setOrigBalance(user.getBalance());
 		tx.setReqOrgCode(guid);
 		tx.setGlnTxNo(glnTxNo);
 		tx.setPayCode(payCode);
 		tx.setTxAmt(Float.valueOf(amount));
+		tx.setNewBalance(tx.getOrigBalance() - tx.getTxAmt());
 		tx.setTxExRate(Float.valueOf(exchangeRate));
 		tx.setTxCur(currencyCode);
 		tx.setStatus(status);
@@ -137,25 +148,44 @@ public class CpmController {
 
 	@SuppressWarnings("unchecked")
 	@RequestMapping(value = "/gencode", method = RequestMethod.GET)
-	public ResponseEntity<JSONObject> genCodeContent() {
-		LOGGER.info("*** Got genCodeContent request ***");
-		String authId = GlnApiUtil.REQ_ORG_CODE_GSKOAA;
-		LocalGlnUser glnUser = glnUserSvc.get(authId);
-		if (glnUser == null) {
-			String uuid = GlnApiUtil.createUUID(authId);
-			glnUser = new LocalGlnUser(authId, uuid);
-			glnUserSvc.insert(glnUser);
+	public ResponseEntity<JSONObject> genCodeContent(
+			@RequestParam(value = "userId", defaultValue = "OAA00018") String userId) {
+		LOGGER.info("*** Got genCodeContent request ***" + userId);
+		LocalGlnUser user = glnUserSvc.get(userId);
+		LOGGER.info("*** Got user " + user);
+		if (user == null) {
+			JSONObject resp = new JSONObject();
+			resp.put("ResMsg", "Invalid user ID: " + userId);
+			resp.put("Status", HttpStatus.BAD_REQUEST);
+			return ResponseEntity.status(HttpStatus.OK).body(resp);
 		}
-		LOGGER.info("*** Generated LOCALGLN_UUID: " + glnUser);
-		if (StringUtil.isBlank(glnUser.getLocalGlnUuid())) {
+
+		ReqOrg org = orgSvc.get(user.getOrgCode());
+		LOGGER.info("*** Got org " + org);
+		if (org == null) {
+			JSONObject resp = new JSONObject();
+			resp.put("ResMsg", "Invalid REQ ORG: " + user.getOrgCode());
+			resp.put("Status", HttpStatus.BAD_REQUEST);
+			return ResponseEntity.status(HttpStatus.OK).body(resp);
+		}
+
+		if (StringUtil.isBlank(user.getLocalGlnUuid())) {
+			String uuid = GlnApiUtil.createUUID(org.getOrgCode(),
+					org.getAuthSecret());
+			user.setLocalGlnUuid(uuid);
+			glnUserSvc.updateGlnUuid(userId, uuid);
+			LOGGER.info("*** Generated LOCALGLN_UUID: " + user);
+		}
+
+		if (StringUtil.isBlank(user.getLocalGlnUuid())) {
 			JSONObject resp = new JSONObject();
 			resp.put("ResMsg", "Cannot get LOCALGLN_UUID!");
 			resp.put("Status", HttpStatus.BAD_REQUEST);
 			return ResponseEntity.status(HttpStatus.OK).body(resp);
 		}
 
-		JSONObject payload = GlnApiUtil
-				.genCodeContent(glnUser.getLocalGlnUuid(), authId);
+		JSONObject payload = GlnApiUtil.genCodeContent(user.getLocalGlnUuid(),
+				org.getOrgCode(), org.getAuthSecret());
 		if (payload == null) {
 			JSONObject resp = new JSONObject();
 			resp.put("ResMsg", "Error generate qr/bar code!");
@@ -178,7 +208,8 @@ public class CpmController {
 		JSONObject header = (JSONObject) payload.get("GLN_HEADER");
 
 		CpmTransaction tx = new CpmTransaction();
-		tx.setReqOrgCode(glnUser.getLocalGlnUuid());
+		tx.setUserId(userId);
+		tx.setReqOrgCode(user.getLocalGlnUuid());
 		tx.setGlnTxNo((String) header.get("GLN_TX_NO"));
 		tx.setQrCode((String) resp.get("QR_CODE"));
 		tx.setBarCode((String) resp.get("BAR_CODE"));
@@ -186,6 +217,8 @@ public class CpmController {
 		tx.setReqOrgTxTime(String.valueOf(header.get("REQ_ORG_TX_TIME")));
 		tx.setValidSecond(
 				Integer.valueOf(String.valueOf(resp.get("VALID_SECOND"))));
+		tx.setOrigBalance(user.getBalance());
+		tx.setNewBalance(user.getBalance());
 		tx.setStatus("Generated");
 		txSvc.insert(tx);
 

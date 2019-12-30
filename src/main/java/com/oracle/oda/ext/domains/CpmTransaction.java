@@ -26,6 +26,7 @@ package com.oracle.oda.ext.domains;
  * </PRE>
  ***************************************************************************/
 public class CpmTransaction {
+	private String userId;
 	private String reqOrgCode;
 	private String reqOrgTxDate;
 	private String reqOrgTxTime;
@@ -41,6 +42,21 @@ public class CpmTransaction {
 	private Float txExRate;
 	private String status;
 	private String approveDateTime;
+
+	/**
+	 * @return the userId
+	 */
+	public String getUserId() {
+		return userId;
+	}
+
+	/**
+	 * @param userId
+	 *            the userId to set
+	 */
+	public void setUserId(String userId) {
+		this.userId = userId;
+	}
 
 	/**
 	 * @return the reqOrgCode
@@ -274,14 +290,15 @@ public class CpmTransaction {
 	 */
 	@Override
 	public String toString() {
-		return "CpmTransaction [reqOrgCode=" + reqOrgCode + ", reqOrgTxDate="
-				+ reqOrgTxDate + ", reqOrgTxTime=" + reqOrgTxTime + ", glnTxNo="
-				+ glnTxNo + ", payCode=" + payCode + ", barCode=" + barCode
-				+ ", qrCode=" + qrCode + ", validSecond=" + validSecond
-				+ ", origBalance=" + origBalance + ", newBalance=" + newBalance
-				+ ", txAmt=" + txAmt + ", txCur=" + txCur + ", txExRate="
-				+ txExRate + ", status=" + status + ", approveDateTime="
-				+ approveDateTime + "]";
+		return "CpmTransaction [userId=" + userId + ", reqOrgCode=" + reqOrgCode
+				+ ", reqOrgTxDate=" + reqOrgTxDate + ", reqOrgTxTime="
+				+ reqOrgTxTime + ", glnTxNo=" + glnTxNo + ", payCode=" + payCode
+				+ ", barCode=" + barCode + ", qrCode=" + qrCode
+				+ ", validSecond=" + validSecond + ", origBalance="
+				+ origBalance + ", newBalance=" + newBalance + ", txAmt="
+				+ txAmt + ", txCur=" + txCur + ", txExRate=" + txExRate
+				+ ", status=" + status + ", approveDateTime=" + approveDateTime
+				+ "]";
 	}
 
 }
