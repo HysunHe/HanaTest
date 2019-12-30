@@ -182,7 +182,7 @@ public class CpmTransaction {
 	 * @return the origBalance
 	 */
 	public Float getOrigBalance() {
-		return origBalance;
+		return origBalance == null ? 0 : this.origBalance;
 	}
 
 	/**
@@ -197,7 +197,7 @@ public class CpmTransaction {
 	 * @return the newBalance
 	 */
 	public Float getNewBalance() {
-		return newBalance;
+		return newBalance == null ? 0 : this.newBalance;
 	}
 
 	/**

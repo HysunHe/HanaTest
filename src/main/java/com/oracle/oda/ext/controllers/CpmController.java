@@ -129,9 +129,14 @@ public class CpmController {
 
 		CpmTransaction tx = new CpmTransaction();
 		CpmTransaction txOrig = txSvc.get(glnTxNo, "Generated");
-		LocalGlnUser user = glnUserSvc.get(txOrig.getUserId());
-		tx.setUserId(txOrig.getUserId());
-		tx.setOrigBalance(user.getBalance());
+		if (txOrig == null) {
+			LOGGER.warn(
+					"*** Original TX does not exist. Assume this is just an test.");
+		} else {
+			LocalGlnUser user = glnUserSvc.get(txOrig.getUserId());
+			tx.setUserId(txOrig.getUserId());
+			tx.setOrigBalance(user.getBalance());
+		}
 		tx.setReqOrgCode(guid);
 		tx.setGlnTxNo(glnTxNo);
 		tx.setPayCode(payCode);
