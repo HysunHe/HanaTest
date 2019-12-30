@@ -239,4 +239,18 @@ public class CpmController {
 
 		return ResponseEntity.status(HttpStatus.OK).body(resp);
 	}
+
+	@SuppressWarnings("unchecked")
+	@RequestMapping(value = "/check-completeness", method = RequestMethod.GET)
+	public ResponseEntity<JSONObject> checkCompleteness(
+			@RequestParam("glnTxNo") String glnTxNo) {
+		CpmTransaction txOrig = txSvc.get(glnTxNo, "Completed");
+		JSONObject resp = new JSONObject();
+		if (txOrig != null) {
+			resp.put("STATUS", "Completed");
+		} else {
+			resp.put("STATUS", "NotCompleted");
+		}
+		return ResponseEntity.status(HttpStatus.OK).body(resp);
+	}
 }
