@@ -119,24 +119,25 @@ public class CpmController {
 		// "glnTxNo": "201912200715390987153813291013",
 		// "resTxDateTime": "20191220161545"
 		// }
-		final String resTxDateTime = DateUtil.date2String(DateUtil.now(),
-				"yyyyMMddHHmmss");
-		final String status = "Completed";
-		resp.put("resultType", "SUCCESS");
-		resp.put("status", status);
-		resp.put("glnTxNo", glnTxNo);
-		resp.put("resTxDateTime", resTxDateTime);
-
 		CpmTransaction tx = new CpmTransaction();
 		CpmTransaction txOrig = txSvc.get(glnTxNo, "Generated");
 		if (txOrig == null) {
 			LOGGER.warn(
-					"*** Original TX does not exist. Assume this is just an test.");
+					"!Original TX does not exist. Assume this is just an test!");
+			// We don't stop here for easy test purpose only.
 		} else {
 			LocalGlnUser user = glnUserSvc.get(txOrig.getUserId());
 			tx.setUserId(txOrig.getUserId());
 			tx.setOrigBalance(user.getBalance());
+			if (user.getBalance() < Float.valueOf(amount)) {
+				resp.put("ResMsg", "Out of balance!");
+				resp.put("Status", HttpStatus.BAD_REQUEST);
+				return ResponseEntity.status(HttpStatus.OK).body(resp);
+			}
 		}
+		final String resTxDateTime = DateUtil.date2String(DateUtil.now(),
+				"yyyyMMddHHmmss");
+		final String status = "Completed";
 		tx.setReqOrgCode(guid);
 		tx.setGlnTxNo(glnTxNo);
 		tx.setPayCode(payCode);
@@ -148,6 +149,10 @@ public class CpmController {
 		tx.setApproveDateTime(resTxDateTime);
 		txSvc.insert(tx);
 
+		resp.put("resultType", "SUCCESS");
+		resp.put("status", status);
+		resp.put("glnTxNo", glnTxNo);
+		resp.put("resTxDateTime", resTxDateTime);
 		return ResponseEntity.status(HttpStatus.OK).body(resp);
 	}
 

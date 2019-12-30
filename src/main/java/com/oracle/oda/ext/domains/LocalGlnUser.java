@@ -99,7 +99,7 @@ public class LocalGlnUser {
 	 * @return the balance
 	 */
 	public Float getBalance() {
-		return balance;
+		return balance == null ? 0 : this.balance;
 	}
 
 	/**
