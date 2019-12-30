@@ -107,8 +107,10 @@ public class CpmController {
 			return ResponseEntity.status(HttpStatus.OK).body(resp);
 		}
 
-		if (!StringUtil.isDouble(amount)) {
-			resp.put("ResMsg", "Parameter format error: amount - " + amount);
+		if (!StringUtil.isDouble(amount)
+				|| !StringUtil.isDouble(exchangeRate)) {
+			resp.put("ResMsg", "Parameter format error: amount | rate - "
+					+ amount + " | " + exchangeRate);
 			resp.put("Status", HttpStatus.BAD_REQUEST);
 			return ResponseEntity.status(HttpStatus.OK).body(resp);
 		}
@@ -129,7 +131,8 @@ public class CpmController {
 			LocalGlnUser user = glnUserSvc.get(txOrig.getUserId());
 			tx.setUserId(txOrig.getUserId());
 			tx.setOrigBalance(user.getBalance());
-			if (user.getBalance() < Float.valueOf(amount)) {
+			if (user.getBalance() < Float.valueOf(amount)
+					* Float.valueOf(exchangeRate)) {
 				resp.put("ResMsg", "Out of balance!");
 				resp.put("Status", HttpStatus.BAD_REQUEST);
 				return ResponseEntity.status(HttpStatus.OK).body(resp);
@@ -142,8 +145,9 @@ public class CpmController {
 		tx.setGlnTxNo(glnTxNo);
 		tx.setPayCode(payCode);
 		tx.setTxAmt(Float.valueOf(amount));
-		tx.setNewBalance(tx.getOrigBalance() - tx.getTxAmt());
 		tx.setTxExRate(Float.valueOf(exchangeRate));
+		tx.setNewBalance(
+				tx.getOrigBalance() - tx.getTxAmt() * tx.getTxExRate());
 		tx.setTxCur(currencyCode);
 		tx.setStatus(status);
 		tx.setApproveDateTime(resTxDateTime);
