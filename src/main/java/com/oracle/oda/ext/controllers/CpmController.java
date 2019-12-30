@@ -245,10 +245,11 @@ public class CpmController {
 	public ResponseEntity<JSONObject> checkCompleteness(
 			@RequestParam("glnTxNo") String glnTxNo) {
 		LOGGER.info("*** Got checkCompleteness request ***" + glnTxNo);
-		CpmTransaction txOrig = txSvc.get(glnTxNo, "Completed");
+		CpmTransaction tx = txSvc.get(glnTxNo, "Completed");
 		JSONObject resp = new JSONObject();
-		if (txOrig != null) {
+		if (tx != null) {
 			resp.put("STATUS", "Completed");
+			resp.put("TX", tx);
 		} else {
 			resp.put("STATUS", "NotCompleted");
 		}
