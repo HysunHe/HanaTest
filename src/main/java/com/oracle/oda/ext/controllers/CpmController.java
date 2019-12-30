@@ -244,6 +244,7 @@ public class CpmController {
 	@RequestMapping(value = "/check-completeness", method = RequestMethod.GET)
 	public ResponseEntity<JSONObject> checkCompleteness(
 			@RequestParam("glnTxNo") String glnTxNo) {
+		LOGGER.info("*** Got checkCompleteness request ***" + glnTxNo);
 		CpmTransaction txOrig = txSvc.get(glnTxNo, "Completed");
 		JSONObject resp = new JSONObject();
 		if (txOrig != null) {
