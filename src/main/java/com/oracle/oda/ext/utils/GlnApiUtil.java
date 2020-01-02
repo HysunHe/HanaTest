@@ -230,9 +230,9 @@ public final class GlnApiUtil {
 		JSONObject payload = GlnApiUtil.genCodeContent(uuid, REQ_ORG_CODE,
 				AUTH_SECRET);
 		JSONObject body = (JSONObject) payload.get("GLN_BODY");
-		System.out.println("*** Pay Code: " + body.get("PAY_K"));
-		System.out.println("*** QR Code: " + body.get("PAY_K_QR"));
-		System.out.println("*** BAR Code: " + body.get("PAY_K_BAR"));
+		System.out.println("*** Pay Code: " + body.get("PAY_CODE"));
+		System.out.println("*** QR Code: " + body.get("QR_CODE"));
+		System.out.println("*** BAR Code: " + body.get("BAR_CODE"));
 		System.out.println("*** VALID SECOND: " + body.get("VALID_SECOND"));
 	}
 }
