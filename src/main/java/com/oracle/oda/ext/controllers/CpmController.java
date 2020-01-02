@@ -212,8 +212,8 @@ public class CpmController {
 		JSONObject resp = new JSONObject();
 		resp.put("GLN_TX_NO", header.get("GLN_TX_NO"));
 		resp.put("PAY_CODE", body.get("PAY_CODE"));
-		resp.put("BAR_CODE", body.get("BARCODE"));
-		resp.put("QR_CODE", body.get("QRCODE"));
+		resp.put("BAR_CODE", body.get("BAR_CODE"));
+		resp.put("QR_CODE", body.get("QR_CODE"));
 		resp.put("VALID_SECOND", body.get("VALID_SECOND"));
 
 		LOGGER.info("*** GLN_TX_NO: " + resp.get("GLN_TX_NO"));
