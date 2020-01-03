@@ -6,6 +6,8 @@
 
 package com.oracle.oda.ext.controllers;
 
+import java.util.regex.Matcher;
+
 import org.json.simple.JSONObject;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -92,14 +94,12 @@ public class CpmController {
 		String guid = (String) o.get("guid");
 		String glnTxNo = (String) o.get("glnTxNo");
 		String payCode = (String) o.get("payCode");
-		String paymentNo = (String) o.get("paymentNo");
 		String amount = (String) o.get("amount");
 		String exchangeRate = (String) o.get("exchangeRate");
 		String currencyCode = (String) o.get("currencyCode");
 
 		if (StringUtil.isBlank(guid) || StringUtil.isBlank(glnTxNo)
-				|| StringUtil.isBlank(payCode) || StringUtil.isBlank(paymentNo)
-				|| StringUtil.isBlank(amount)
+				|| StringUtil.isBlank(payCode) || StringUtil.isBlank(amount)
 				|| StringUtil.isBlank(exchangeRate)
 				|| StringUtil.isBlank(currencyCode)) {
 			resp.put("ResMsg", "Missing required parameter(s).");
@@ -122,7 +122,7 @@ public class CpmController {
 		// "resTxDateTime": "20191220161545"
 		// }
 		CpmTransaction tx = new CpmTransaction();
-		CpmTransaction txOrig = txSvc.get(glnTxNo, "Generated");
+		CpmTransaction txOrig = txSvc.get(payCode, "Generated");
 		if (txOrig == null) {
 			LOGGER.warn(
 					"!Original TX does not exist. Assume this is just an test!");
@@ -209,11 +209,17 @@ public class CpmController {
 
 		JSONObject body = (JSONObject) payload.get("GLN_BODY");
 		JSONObject header = (JSONObject) payload.get("GLN_HEADER");
+		String qrCode = (String) body.get("QR_CODE");
+		String payCode = (String) body.get("PAY_CODE");
+		if (StringUtil.isBlank(payCode)) {
+			Matcher payCodeMatcher = GlnApiUtil.PAYCODE_PATTERN.matcher(qrCode);
+			payCode = payCodeMatcher.group();
+		}
 		JSONObject resp = new JSONObject();
 		resp.put("GLN_TX_NO", header.get("GLN_TX_NO"));
-		resp.put("PAY_CODE", body.get("PAY_CODE"));
+		resp.put("PAY_CODE", payCode);
 		resp.put("BAR_CODE", body.get("BAR_CODE"));
-		resp.put("QR_CODE", body.get("QR_CODE"));
+		resp.put("QR_CODE", qrCode);
 		resp.put("VALID_SECOND", body.get("VALID_SECOND"));
 
 		LOGGER.info("*** GLN_TX_NO: " + resp.get("GLN_TX_NO"));
@@ -228,6 +234,7 @@ public class CpmController {
 		tx.setGlnTxNo((String) header.get("GLN_TX_NO"));
 		tx.setQrCode((String) resp.get("QR_CODE"));
 		tx.setBarCode((String) resp.get("BAR_CODE"));
+		tx.setPayCode((String) resp.get("PAY_CODE"));
 		tx.setReqOrgTxDate(String.valueOf(header.get("REQ_ORG_TX_DATE")));
 		tx.setReqOrgTxTime(String.valueOf(header.get("REQ_ORG_TX_TIME")));
 		tx.setValidSecond(
@@ -243,9 +250,9 @@ public class CpmController {
 	@SuppressWarnings("unchecked")
 	@RequestMapping(value = "/check-completeness", method = RequestMethod.GET)
 	public ResponseEntity<JSONObject> checkCompleteness(
-			@RequestParam("glnTxNo") String glnTxNo) {
-		LOGGER.info("*** Got checkCompleteness request ***" + glnTxNo);
-		CpmTransaction tx = txSvc.get(glnTxNo, "Completed");
+			@RequestParam("payCode") String payCode) {
+		LOGGER.info("*** Got checkCompleteness request ***" + payCode);
+		CpmTransaction tx = txSvc.get(payCode, "Completed");
 		JSONObject resp = new JSONObject();
 		if (tx != null) {
 			resp.put("STATUS", "Completed");

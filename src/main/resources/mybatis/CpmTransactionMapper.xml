@@ -62,7 +62,7 @@
 			STATUS as status,
 			APPROVE_DATETIME as approveDateTime 
 		FROM SSP_TRANSACTIONS
-		WHERE GLN_TX_NO=#{glnTxNo} AND STATUS=#{status} AND ROWNUM=1
+		WHERE PAY_CODE=#{payCode} AND STATUS=#{status} AND ROWNUM=1
 	</select>
 	
 </mapper>

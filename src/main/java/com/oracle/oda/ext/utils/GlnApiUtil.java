@@ -15,6 +15,7 @@ import java.util.Date;
 import java.util.HashMap;
 import java.util.Map;
 import java.util.Random;
+import java.util.regex.Pattern;
 
 import javax.crypto.Mac;
 import javax.crypto.spec.SecretKeySpec;
@@ -58,6 +59,7 @@ public final class GlnApiUtil {
 	public static final String CURRENCY_CODE = "AAD";
 	public static final String ALGORITHM = "HmacSHA256";
 	public static final String DATEFORMAT = "yyyyMMddHHmmss";
+	public static final Pattern PAYCODE_PATTERN = Pattern.compile("\\d{10,}");
 
 	static {
 		ServiceCallClient.setHttpsPort(9000);
