@@ -213,7 +213,9 @@ public class CpmController {
 		String payCode = (String) body.get("PAY_CODE");
 		if (StringUtil.isBlank(payCode)) {
 			Matcher payCodeMatcher = GlnApiUtil.PAYCODE_PATTERN.matcher(qrCode);
-			payCode = payCodeMatcher.group();
+			if (payCodeMatcher.find()) {
+				payCode = payCodeMatcher.group();
+			}
 		}
 		JSONObject resp = new JSONObject();
 		resp.put("GLN_TX_NO", header.get("GLN_TX_NO"));
