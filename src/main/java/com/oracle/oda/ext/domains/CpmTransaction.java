@@ -42,6 +42,11 @@ public class CpmTransaction {
 	private Float txExRate;
 	private String status;
 	private String approveDateTime;
+	private String paymentNo;
+	private String won;
+	private String receiptQr;
+	private String settlementDate;
+	private String apiKey;
 
 	/**
 	 * @return the userId
@@ -283,6 +288,81 @@ public class CpmTransaction {
 		this.approveDateTime = approveDateTime;
 	}
 
+	/**
+	 * @return the paymentNo
+	 */
+	public String getPaymentNo() {
+		return paymentNo;
+	}
+
+	/**
+	 * @param paymentNo
+	 *            the paymentNo to set
+	 */
+	public void setPaymentNo(String paymentNo) {
+		this.paymentNo = paymentNo;
+	}
+
+	/**
+	 * @return the won
+	 */
+	public String getWon() {
+		return won;
+	}
+
+	/**
+	 * @param won
+	 *            the won to set
+	 */
+	public void setWon(String won) {
+		this.won = won;
+	}
+
+	/**
+	 * @return the receiptQr
+	 */
+	public String getReceiptQr() {
+		return receiptQr;
+	}
+
+	/**
+	 * @param receiptQr
+	 *            the receiptQr to set
+	 */
+	public void setReceiptQr(String receiptQr) {
+		this.receiptQr = receiptQr;
+	}
+
+	/**
+	 * @return the settlementDate
+	 */
+	public String getSettlementDate() {
+		return settlementDate;
+	}
+
+	/**
+	 * @param settlementDate
+	 *            the settlementDate to set
+	 */
+	public void setSettlementDate(String settlementDate) {
+		this.settlementDate = settlementDate;
+	}
+
+	/**
+	 * @return the apiKey
+	 */
+	public String getApiKey() {
+		return apiKey;
+	}
+
+	/**
+	 * @param apiKey
+	 *            the apiKey to set
+	 */
+	public void setApiKey(String apiKey) {
+		this.apiKey = apiKey;
+	}
+
 	/*
 	 * (non-Javadoc)
 	 * 
@@ -298,7 +378,9 @@ public class CpmTransaction {
 				+ origBalance + ", newBalance=" + newBalance + ", txAmt="
 				+ txAmt + ", txCur=" + txCur + ", txExRate=" + txExRate
 				+ ", status=" + status + ", approveDateTime=" + approveDateTime
-				+ "]";
+				+ ", paymentNo=" + paymentNo + ", won=" + won + ", receiptQr="
+				+ receiptQr + ", settlementDate=" + settlementDate + ", apiKey="
+				+ apiKey + "]";
 	}
 
 }

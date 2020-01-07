@@ -22,7 +22,12 @@
 			TX_CUR,
 			TX_EX_RATE,
 			STATUS,
-			APPROVE_DATETIME
+			APPROVE_DATETIME,
+			PAYMENT_NO,
+			WON,
+			RECEIPT_QR,
+			SETTLEMENT_DATE,
+			API_KEY
 		) VALUES (
 			#{userId,jdbcType=VARCHAR},
 			#{reqOrgCode,jdbcType=VARCHAR},
@@ -40,6 +45,11 @@
 			#{txExRate,jdbcType=FLOAT},
 			#{status,jdbcType=VARCHAR},
 			#{approveDateTime,jdbcType=VARCHAR}
+			#{paymentNo,jdbcType=VARCHAR},
+			#{won,jdbcType=VARCHAR},
+			#{receiptQr,jdbcType=VARCHAR},
+			#{settlementDate,jdbcType=VARCHAR},
+			#{apiKey,jdbcType=VARCHAR}
 		)
 	</insert>
 	
@@ -60,7 +70,12 @@
 			TX_CUR as txCur,
 			TX_EX_RATE as txExRate,
 			STATUS as status,
-			APPROVE_DATETIME as approveDateTime 
+			APPROVE_DATETIME as approveDateTime,
+			PAYMENT_NO as paymentNo,
+			WON as won,
+			RECEIPT_QR as receiptQr,
+			SETTLEMENT_DATE as settlementDate,
+			API_KEY as apiKey
 		FROM SSP_TRANSACTIONS
 		WHERE PAY_CODE=#{payCode} AND STATUS=#{status} AND ROWNUM=1
 	</select>
