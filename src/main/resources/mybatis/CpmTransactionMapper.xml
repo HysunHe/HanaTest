@@ -44,7 +44,7 @@
 			#{txCur,jdbcType=VARCHAR},
 			#{txExRate,jdbcType=FLOAT},
 			#{status,jdbcType=VARCHAR},
-			#{approveDateTime,jdbcType=VARCHAR}
+			#{approveDateTime,jdbcType=VARCHAR},
 			#{paymentNo,jdbcType=VARCHAR},
 			#{won,jdbcType=VARCHAR},
 			#{receiptQr,jdbcType=VARCHAR},
