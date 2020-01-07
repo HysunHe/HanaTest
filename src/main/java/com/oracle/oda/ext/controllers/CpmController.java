@@ -97,6 +97,11 @@ public class CpmController {
 		String amount = (String) o.get("amount");
 		String exchangeRate = (String) o.get("exchangeRate");
 		String currencyCode = (String) o.get("currencyCode");
+		String paymentNo = (String) o.get("paymentNo");
+		String won = (String) o.get("won");
+		String receiptQR = (String) o.get("receiptQR");
+		String settlementDate = (String) o.get("settlementDate");
+		String apiKey = (String) o.get("apiKey");
 
 		if (StringUtil.isBlank(guid) || StringUtil.isBlank(glnTxNo)
 				|| StringUtil.isBlank(payCode) || StringUtil.isBlank(amount)
@@ -151,6 +156,12 @@ public class CpmController {
 		tx.setTxCur(currencyCode);
 		tx.setStatus(status);
 		tx.setApproveDateTime(resTxDateTime);
+		tx.setPaymentNo(paymentNo);
+		;
+		tx.setWon(won);
+		tx.setReceiptQr(receiptQR);
+		tx.setSettlementDate(settlementDate);
+		tx.setApiKey(apiKey);
 		txSvc.insert(tx);
 
 		resp.put("resultType", "SUCCESS");
