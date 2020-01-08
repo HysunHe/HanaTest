@@ -220,17 +220,23 @@ public class CpmController {
 		JSONObject body = (JSONObject) payload.get("GLN_BODY");
 		JSONObject header = (JSONObject) payload.get("GLN_HEADER");
 		String qrCode = (String) body.get("QR_CODE");
+		String barCode = (String) body.get("BAR_CODE");
 		String payCode = (String) body.get("PAY_CODE");
 		if (StringUtil.isBlank(payCode)) {
-			Matcher payCodeMatcher = GlnApiUtil.PAYCODE_PATTERN.matcher(qrCode);
-			if (payCodeMatcher.find()) {
-				payCode = payCodeMatcher.group();
+			if (!StringUtil.isBlank(qrCode)) {
+				Matcher payCodeMatcher = GlnApiUtil.PAYCODE_PATTERN
+						.matcher(qrCode);
+				if (payCodeMatcher.find()) {
+					payCode = payCodeMatcher.group();
+				}
+			} else if (!StringUtil.isBlank(barCode)) {
+				payCode = barCode.substring(barCode.length() - 14);
 			}
 		}
 		JSONObject resp = new JSONObject();
 		resp.put("GLN_TX_NO", header.get("GLN_TX_NO"));
 		resp.put("PAY_CODE", payCode);
-		resp.put("BAR_CODE", body.get("BAR_CODE"));
+		resp.put("BAR_CODE", barCode);
 		resp.put("QR_CODE", qrCode);
 		resp.put("VALID_SECOND", body.get("VALID_SECOND"));
 

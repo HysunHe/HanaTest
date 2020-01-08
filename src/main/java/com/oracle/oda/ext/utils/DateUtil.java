@@ -129,7 +129,6 @@ public final class DateUtil {
 	}
 
 	public static void main(String[] args) {
-		System.out.println(DateUtil.toTimeZonedString(DateUtil.now(), 9,
-				"yyyyMMddHHmmss"));
+		System.out.println("abcde".substring("abcde".length() - 2));
 	}
 }
