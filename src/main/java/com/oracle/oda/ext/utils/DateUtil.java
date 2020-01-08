@@ -14,6 +14,7 @@ import java.text.ParseException;
 import java.text.SimpleDateFormat;
 import java.util.Calendar;
 import java.util.Date;
+import java.util.TimeZone;
 
 /***************************************************************************
  * <PRE>
@@ -63,7 +64,8 @@ public final class DateUtil {
 		try {
 			return formatter.parse(dateStr);
 		} catch (ParseException e) {
-			throw new IllegalArgumentException("Date: " + dateStr + " | format: " + format + " | Exception: " + e);
+			throw new IllegalArgumentException("Date: " + dateStr
+					+ " | format: " + format + " | Exception: " + e);
 		}
 	}
 
@@ -73,6 +75,13 @@ public final class DateUtil {
 	public static Date now() {
 		Calendar calendar = Calendar.getInstance();
 		return calendar.getTime();
+	}
+
+	public static String toTimeZonedString(Date src, int targetTs,
+			String format) {
+		SimpleDateFormat simpleDateFormat = new SimpleDateFormat(format);
+		simpleDateFormat.setTimeZone(TimeZone.getTimeZone("GMT+" + targetTs));
+		return simpleDateFormat.format(src);
 	}
 
 	/**
@@ -117,5 +126,10 @@ public final class DateUtil {
 	public static int getTimeDiffMins(Date d1, Date d2) {
 		long mins = (d1.getTime() - d2.getTime()) / (1000 * 60);
 		return Long.valueOf(mins).intValue();
+	}
+
+	public static void main(String[] args) {
+		System.out.println(DateUtil.toTimeZonedString(DateUtil.now(), 9,
+				"yyyyMMddHHmmss"));
 	}
 }

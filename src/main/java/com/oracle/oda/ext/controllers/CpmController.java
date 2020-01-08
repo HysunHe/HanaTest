@@ -143,8 +143,8 @@ public class CpmController {
 				return ResponseEntity.status(HttpStatus.OK).body(resp);
 			}
 		}
-		final String resTxDateTime = DateUtil.date2String(DateUtil.now(),
-				"yyyyMMddHHmmss");
+		final String resTxDateTime = DateUtil.toTimeZonedString(DateUtil.now(),
+				9, "yyyyMMddHHmmss");
 		final String status = "Completed";
 		tx.setReqOrgCode(guid);
 		tx.setGlnTxNo(glnTxNo);
@@ -157,7 +157,6 @@ public class CpmController {
 		tx.setStatus(status);
 		tx.setApproveDateTime(resTxDateTime);
 		tx.setPaymentNo(paymentNo);
-		;
 		tx.setWon(won);
 		tx.setReceiptQr(receiptQR);
 		tx.setSettlementDate(settlementDate);

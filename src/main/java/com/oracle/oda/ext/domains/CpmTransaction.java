@@ -6,6 +6,9 @@
 
 package com.oracle.oda.ext.domains;
 
+import com.oracle.oda.ext.utils.DateUtil;
+import com.oracle.oda.ext.utils.StringUtil;
+
 /***************************************************************************
  * <PRE>
  *  Project Name    : ssp
@@ -47,6 +50,8 @@ public class CpmTransaction {
 	private String receiptQr;
 	private String settlementDate;
 	private String apiKey;
+	private String approveDate;
+	private String approveTime;
 
 	/**
 	 * @return the userId
@@ -361,6 +366,48 @@ public class CpmTransaction {
 	 */
 	public void setApiKey(String apiKey) {
 		this.apiKey = apiKey;
+	}
+
+	/**
+	 * @return the approveDate
+	 */
+	public String getApproveDate() {
+		if (StringUtil.isBlank(this.approveDateTime)) {
+			this.approveDate = null;
+		} else {
+			this.approveDate = DateUtil.date2String(DateUtil.string2Date(
+					this.approveDateTime, "yyyyMMddHHmmss"), "yyyy.MM.dd");
+		}
+		return this.approveDate;
+	}
+
+	/**
+	 * @param approveDate
+	 *            the approveDate to set
+	 */
+	public void setApproveDate(String approveDate) {
+		// Immutable
+	}
+
+	/**
+	 * @return the approveTime
+	 */
+	public String getApproveTime() {
+		if (StringUtil.isBlank(this.approveDateTime)) {
+			this.approveTime = null;
+		} else {
+			this.approveTime = DateUtil.date2String(DateUtil.string2Date(
+					this.approveDateTime, "yyyyMMddHHmmss"), "HH:mm:ss");
+		}
+		return this.approveTime;
+	}
+
+	/**
+	 * @param approveTime
+	 *            the approveTime to set
+	 */
+	public void setApproveTime(String approveTime) {
+		// Immutable
 	}
 
 	/*
